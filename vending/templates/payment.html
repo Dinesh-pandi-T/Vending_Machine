@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Payment</title>
+</head>
+<body>
+  <h1>Simulated Payment</h1>
+  <form method="POST">
+    {% csrf_token %}
+    <label>Enter amount (in ₹): </label>
+    <input type="number" name="amount_paid" required><br>
+    <button type="submit">Pay</button>
+  </form>
+
+  {% if change is not None %}
+    <p>Amount Paid: ₹{{ amount_paid }}</p>
+    <p>Price: ₹{{ price }}</p>
+    <p>Change: ₹{{ change }}</p>
+    <p><strong>Thank you! Your {{ beverage|default:"drink" }} is ready.</strong></p>
+  {% endif %}
+</body>
+</html>

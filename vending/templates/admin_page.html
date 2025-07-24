@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel - Smart Vending Machine</title>
+  <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+</head>
+<body>
+  <div class="admin-container">
+    <h1>Admin Panel</h1>
+    <form method="POST">
+      {% csrf_token %}
+      <table>
+        <tr>
+          <th>Ingredient</th>
+          <th>Quantity</th>
+          <th>Edit</th>
+        </tr>
+        {% for ingredient in ingredients %}
+        <tr>
+          <td>{{ ingredient.name }}</td>
+          <td>{{ ingredient.quantity }}</td>
+          <td><input type="number" name="{{ ingredient.name }}" value="{{ ingredient.quantity }}"></td>
+        </tr>
+        {% endfor %}
+      </table>
+      <button type="submit">Update</button>
+    </form>
+    <a href="/">← Back to Home</a>
+  </div>
+</body>
+</html>

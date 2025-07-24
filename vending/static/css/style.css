@@ -1,0 +1,124 @@
+/* General Reset & Body */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f8f8;
+  text-align: center;
+  color: #222;
+}
+
+/* Title */
+h1 {
+  margin-top: 30px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #222;
+}
+
+/* Admin Panel Button */
+.admin-btn {
+  display: inline-block;
+  margin: 20px auto;
+  padding: 12px 24px;
+  background: #7b5cf0;
+  color: white;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(123, 92, 240, 0.3);
+  transition: background 0.3s ease;
+}
+
+.admin-btn:hover {
+  background: #6848d0;
+}
+
+/* Layout: Drinks + Status Side-by-Side */
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 40px 20px;
+  flex-wrap: wrap;
+}
+
+/* Drink Boxes */
+.container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.box {
+  width: 150px;
+  height: 300px;
+  background: linear-gradient(145deg, #8e75ff, #a890ff);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(142, 117, 255, 0.4);
+}
+
+/* Status Panel */
+.status-panel {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  padding: 20px;
+  width: 260px;
+  text-align: left;
+}
+
+.status-panel h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.status-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.status-panel li {
+  background: #f3f3f3;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .status-panel {
+    width: 90%;
+    margin-top: 30px;
+  }
+
+  .box {
+    width: 120px;
+    height: 250px;
+    font-size: 1rem;
+  }
+}

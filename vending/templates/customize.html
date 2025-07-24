@@ -1,0 +1,174 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Customize {{ beverage.name }}</title>
+  <link rel="stylesheet" href="{% static 'css/customize.css' %}">
+</head>
+<body>
+  <h2>Customize Your {{ beverage.name }}</h2>
+
+  <form id="customizeForm" method="post">
+    {% csrf_token %}
+
+    {% if beverage.name == "milk" %}
+      <label for="milkQty">Milk (ml):</label>
+      <input type="number" name="milkQty" id="milkQty" value="{{ default_quantities.milk }}">
+      <div class="error" id="milkError"></div>
+
+      <label for="sugarQty">Sugar (g):</label>
+      <input type="number" name="sugarQty" id="sugarQty" value="{{ default_quantities.sugar }}">
+      <div class="error" id="sugarError"></div>
+
+    {% elif beverage.name == "tea" %}
+      <label for="teaQty">Tea (g):</label>
+      <input type="number" name="teaQty" id="teaQty" value="{{ default_quantities.tea }}">
+      <div class="error" id="teaError"></div>
+
+      <label for="milkQty">Milk (ml):</label>
+      <input type="number" name="milkQty" id="milkQty" value="{{ default_quantities.milk }}">
+      <div class="error" id="milkError"></div>
+
+      <label for="sugarQty">Sugar (g):</label>
+      <input type="number" name="sugarQty" id="sugarQty" value="{{ default_quantities.sugar }}">
+      <div class="error" id="sugarError"></div>
+
+    {% elif beverage.name == "coffee" %}
+      <label for="coffeeQty">Coffee (g):</label>
+      <input type="number" name="coffeeQty" id="coffeeQty" value="{{ default_quantities.coffee }}">
+      <div class="error" id="coffeeError"></div>
+
+      <label for="milkQty">Milk (ml):</label>
+      <input type="number" name="milkQty" id="milkQty" value="{{ default_quantities.milk }}">
+      <div class="error" id="milkError"></div>
+
+      <label for="sugarQty">Sugar (g):</label>
+      <input type="number" name="sugarQty" id="sugarQty" value="{{ default_quantities.sugar }}">
+      <div class="error" id="sugarError"></div>
+    {% endif %}
+
+    <div class="cost" id="costDisplay">Total Cost: ₹0</div>
+
+    <label for="paymentInput">Enter Payment :</label>
+    <input type="text" id="paymentInput" />
+    
+    
+    
+    {% if success %}
+      <div class="change" id="changeDisplay"></div>
+      <p style="color: green;">Payment Successful! 🎉</p>
+      <a href="{% url 'home' %}"><button type="button">Go to Home</button></a>
+    {% else %}
+      <div class="change" id="changeDisplay"></div>
+      <button type="submit" id="payButton">Pay & Confirm</button>
+    {% endif %}    
+  </form>
+
+  <script>
+    const prices = {
+      tea: {{ prices.tea }},
+      coffee: {{ prices.coffee }},
+      milk: {{ prices.milk }},
+      sugar: {{ prices.sugar }}
+    };
+
+    const stock = {
+      tea: {{ ingredient_stock.tea }},
+      coffee: {{ ingredient_stock.coffee }},
+      milk: {{ ingredient_stock.milk }},
+      sugar: {{ ingredient_stock.sugar }}
+    };
+
+    function showError(id, message) {
+      const el = document.getElementById(id);
+      if(el) el.innerText = message;
+    }
+
+    function clearErrors() {
+      ["teaError", "coffeeError", "milkError", "sugarError"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = "";
+      });
+    }
+
+    function validateStock() {
+      clearErrors();
+      let valid = true;
+
+      const tea = parseInt(document.getElementById("teaQty")?.value || 0);
+      if (tea > stock.tea) {
+        showError("teaError", `Only ${stock.tea}g tea in stock`);
+        valid = false;
+      }
+
+      const coffee = parseInt(document.getElementById("coffeeQty")?.value || 0);
+      if (coffee > stock.coffee) {
+        showError("coffeeError", `Only ${stock.coffee}g coffee in stock`);
+        valid = false;
+      }
+
+      const milk = parseInt(document.getElementById("milkQty")?.value || 0);
+      if (milk > stock.milk) {
+        showError("milkError", `Only ${stock.milk}ml milk in stock`);
+        valid = false;
+      }
+
+      const sugar = parseInt(document.getElementById("sugarQty")?.value || 0);
+      if (sugar > stock.sugar) {
+        showError("sugarError", `Only ${stock.sugar}g sugar in stock`);
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    function calculateCost() {
+      if (!validateStock()) {
+        document.getElementById("costDisplay").innerText = `Total Cost: ₹0`;
+        return 0;
+      }
+
+      let total = 0;
+      const tea = parseInt(document.getElementById("teaQty")?.value || 0);
+      const coffee = parseInt(document.getElementById("coffeeQty")?.value || 0);
+      const milk = parseInt(document.getElementById("milkQty")?.value || 0);
+      const sugar = parseInt(document.getElementById("sugarQty")?.value || 0);
+
+      total += tea * (prices.tea || 0);
+      total += coffee * (prices.coffee || 0);
+      total += milk * (prices.milk || 0);
+      total += sugar * (prices.sugar || 0);
+
+      document.getElementById("costDisplay").innerText = `Total Cost: ₹${total}`;
+      return total;
+    }
+
+    document.getElementById("customizeForm").addEventListener("input", calculateCost);
+
+    document.getElementById("customizeForm").addEventListener("submit", function (e) {
+      const cost = calculateCost();
+
+      if (!validateStock()) {
+        e.preventDefault();
+        return;
+      }
+
+      const paymentInput = document.getElementById("paymentInput").value;
+      const payments = paymentInput.split(',').map(v => parseFloat(v.trim()) || 0);
+      const paid = payments.reduce((a, b) => a + b, 0);
+
+      if (paid < cost) {
+        e.preventDefault();
+        document.getElementById("changeDisplay").innerText = `Not enough money! ${cost}`;
+      }else {
+        const change = paid - cost;
+        document.getElementById("changeDisplay").innerText = `Payment OK. Change: ₹${change.toFixed(2)}`;
+      }
+    });
+
+    calculateCost();
+  </script>
+</body>
+</html>
