@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Beverage, Ingredient
 from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 def home(request):
     ingredients = Ingredient.objects.all()
     return render(request, 'home.html', {'ingredients': ingredients})
@@ -9,6 +10,7 @@ def home(request):
 from django.shortcuts import render, get_object_or_404
 from .models import Beverage, Ingredient
 
+@csrf_exempt
 def customize(request, name):
     beverage = get_object_or_404(Beverage, name=name)
 
@@ -84,7 +86,7 @@ def customize(request, name):
     })
 
 
-
+@csrf_exempt
 def admin_panel(request):
     ingredients = Ingredient.objects.all()
     if request.method == "POST":
